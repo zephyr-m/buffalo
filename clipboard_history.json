@@ -1,6 +1,11 @@
 {
   "history": [
     {
+      "text": "git branch --show-current",
+      "timestamp": "2025-12-04T04:34:03.407913",
+      "preview": "git branch --show-current"
+    },
+    {
       "text": "sudo su",
       "timestamp": "2025-12-04T04:30:46.577362",
       "preview": "sudo su"
@@ -44,11 +49,6 @@
       "text": "ls -d */  ",
       "timestamp": "2025-12-04T04:17:15.903827",
       "preview": "ls -d */  "
-    },
-    {
-      "text": "git branch --show-current",
-      "timestamp": "2025-12-04T04:17:07.611713",
-      "preview": "git branch --show-current"
     },
     {
       "text": "python3 clipboard_manager.py\n",

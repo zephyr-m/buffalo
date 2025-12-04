@@ -40,10 +40,10 @@ class ClipboardManager:
         # Настраиваем горячие клавиши
         self.setup_hotkeys()
         
-        print("📋 Мультибуфер запущен!")
-        print("🔥 Двойной Ctrl - показать/скрыть мультибуфер")
+        print("🦬 Buffalo запущен!")
+        print("🔥 Двойной Ctrl - показать/скрыть Buffalo")
         print("🔥 Esc - скрыть окно")
-        print("🛑 Остановка: pkill -f clipboard_manager.py")
+        print("🛑 Остановка: sudo supervisorctl stop clipboard-manager")
         print(f"📚 Загружено {len(self.history)} записей")
 
     def load_history(self):
@@ -239,7 +239,7 @@ class ClipboardManager:
         else:
             self.window = tk.Tk()
         
-        self.window.title("📋 История буфера")
+        self.window.title("🦬 Buffalo")
         
         # Получаем размеры экрана
         screen_width = self.window.winfo_screenwidth()
@@ -266,7 +266,7 @@ class ClipboardManager:
         header_frame = tk.Frame(main_frame, bg='#2c3e50', padx=15, pady=12)
         header_frame.pack(fill=tk.X)
         
-        title_label = tk.Label(header_frame, text="📋 Мультибуфер", 
+        title_label = tk.Label(header_frame, text="🦬 Buffalo", 
                               font=('Segoe UI', 13, 'bold'), 
                               bg='#2c3e50', fg='#ecf0f1')
         title_label.pack(side='left')
