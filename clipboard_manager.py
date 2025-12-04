@@ -29,6 +29,8 @@ class ClipboardManager:
         self.save_lock = threading.Lock()
         self.last_ctrl_press = 0  # Время последнего нажатия Ctrl
         self.history_scrollable = None  # Контейнер для карточек
+        self.window_width = 560  # Ширина окна по умолчанию
+        self.window_height = None  # Высота окна (90% экрана)
         
         # Загружаем историю
         self.load_history()
@@ -53,6 +55,7 @@ class ClipboardManager:
                 with open(self.data_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
                     self.history = data.get('history', [])
+                    self.window_width = data.get('window_width', 560)
                     print(f"📚 Загружено {len(self.history)} записей из истории")
         except Exception as e:
             print(f"⚠️ Ошибка загрузки истории: {e}")
@@ -64,7 +67,10 @@ class ClipboardManager:
                 # Атомарная запись через временный файл
                 temp_file = self.data_file + '.tmp'
                 with open(temp_file, 'w', encoding='utf-8') as f:
-                    json.dump({'history': self.history}, f, ensure_ascii=False, indent=2)
+                    json.dump({
+                        'history': self.history,
+                        'window_width': self.window_width
+                    }, f, ensure_ascii=False, indent=2)
                 
                 # Атомарное переименование
                 os.replace(temp_file, self.data_file)
@@ -188,7 +194,7 @@ class ClipboardManager:
         
         # Прижимаем к левому краю ПОСЛЕ показа
         screen_height = self.window.winfo_screenheight()
-        self.window.geometry(f"560x{int(screen_height * 0.9)}+0+50")
+        self.window.geometry(f"{self.window_width}x{int(screen_height * 0.9)}+0+50")
         
         self.window.lift()
         self.window.attributes('-topmost', True)
@@ -245,15 +251,29 @@ class ClipboardManager:
         screen_width = self.window.winfo_screenwidth()
         screen_height = self.window.winfo_screenheight()
         
-        # Ширина 560px (на 30% уже), высота 90% экрана
-        window_width = 560
+        # Используем сохраненную ширину, высота 90% экрана
         window_height = int(screen_height * 0.9)
+        self.window_height = window_height
         
         # Окно поверх всех
         self.window.attributes('-topmost', True)
         
+        # Делаем окно ресайзабельным
+        self.window.resizable(True, False)  # Только по ширине
+        
         # Прижимаем окно к левому краю
-        self.left_align_window(window_width, window_height)
+        self.left_align_window(self.window_width, window_height)
+        
+        # Обработчик изменения размера окна
+        def on_window_resize(event):
+            if event.widget == self.window:
+                self.window_width = event.width
+                self.save_history()
+                # Обновляем ширину canvas window
+                if hasattr(self, 'history_canvas'):
+                    self.history_canvas.itemconfig(self.canvas_window, width=event.width)
+        
+        self.window.bind("<Configure>", on_window_resize)
         
         # Скрываем окно сразу (показываем только по Ctrl+F)
         self.window.withdraw()
@@ -291,28 +311,29 @@ class ClipboardManager:
         clear_btn.bind("<Leave>", on_leave)
         
         # Скроллируемая область для истории
-        history_canvas = tk.Canvas(main_frame, bg='#f8f9fa', highlightthickness=0)
-        history_scrollbar = ttk.Scrollbar(main_frame, orient="vertical", command=history_canvas.yview)
-        self.history_scrollable = tk.Frame(history_canvas, bg='#f8f9fa')
+        self.history_canvas = tk.Canvas(main_frame, bg='#f8f9fa', highlightthickness=0)
+        history_scrollbar = ttk.Scrollbar(main_frame, orient="vertical", command=self.history_canvas.yview)
+        self.history_scrollable = tk.Frame(self.history_canvas, bg='#f8f9fa')
         
         self.history_scrollable.bind(
             "<Configure>",
-            lambda e: history_canvas.configure(scrollregion=history_canvas.bbox("all"))
+            lambda e: self.history_canvas.configure(scrollregion=self.history_canvas.bbox("all"))
         )
         
-        history_canvas.create_window((0, 0), window=self.history_scrollable, anchor="nw")
-        history_canvas.configure(yscrollcommand=history_scrollbar.set)
+        # Создаем окно на всю ширину canvas
+        self.canvas_window = self.history_canvas.create_window((0, 0), window=self.history_scrollable, anchor="nw", width=self.window_width)
+        self.history_canvas.configure(yscrollcommand=history_scrollbar.set)
         
         # Привязываем скролл колесом мыши (Linux)
         def on_mousewheel_up(event):
-            history_canvas.yview_scroll(-1, "units")
+            self.history_canvas.yview_scroll(-1, "units")
         def on_mousewheel_down(event):
-            history_canvas.yview_scroll(1, "units")
+            self.history_canvas.yview_scroll(1, "units")
         
-        history_canvas.bind_all("<Button-4>", on_mousewheel_up)
-        history_canvas.bind_all("<Button-5>", on_mousewheel_down)
+        self.history_canvas.bind_all("<Button-4>", on_mousewheel_up)
+        self.history_canvas.bind_all("<Button-5>", on_mousewheel_down)
         
-        history_canvas.pack(side="left", fill="both", expand=True)
+        self.history_canvas.pack(side="left", fill="both", expand=True)
         history_scrollbar.pack(side="right", fill="y")
         
         # Заполняем данными
@@ -377,7 +398,7 @@ class ClipboardManager:
         """Создаем карточку для записи"""
         # Внешний фрейм - рамка (белая)
         border_frame = tk.Frame(parent, bg='#ffffff', padx=1, pady=1)
-        border_frame.pack(fill=tk.X, pady=4, padx=8)
+        border_frame.pack(fill=tk.X, pady=4, padx=0)  # padx=0 для растяжения
         
         # Внутренний фрейм - карточка
         card_frame = tk.Frame(border_frame, bg='#ffffff')
@@ -385,7 +406,7 @@ class ClipboardManager:
         
         # Контент с отступами
         inner_frame = tk.Frame(card_frame, bg='#ffffff')
-        inner_frame.pack(fill=tk.X, padx=10, pady=8)
+        inner_frame.pack(fill=tk.X, padx=5, pady=5)  # Уменьшили отступы
         
         # Контейнер для текста и кнопки
         content_frame = tk.Frame(inner_frame, bg='#ffffff')
@@ -410,26 +431,6 @@ class ClipboardManager:
                              activeforeground='white',
                              command=lambda: self.delete_entry(entry['text']))
         delete_btn.pack(side='right', padx=(8, 0))
-        
-        # Кнопка копирования
-        copy_btn = tk.Button(content_frame, text="📋", 
-                           font=('Segoe UI', 11),
-                           bg='#3498db', fg='white',
-                           relief='flat', bd=0,
-                           padx=8, pady=4,
-                           cursor='hand2',
-                           activebackground='#2980b9',
-                           activeforeground='white',
-                           command=lambda: self.copy_and_hide(entry['text']))
-        copy_btn.pack(side='right', padx=(8, 0))
-        
-        # Эффект hover для кнопки копирования
-        def copy_on_enter(e):
-            copy_btn.config(bg='#2980b9')
-        def copy_on_leave(e):
-            copy_btn.config(bg='#3498db')
-        copy_btn.bind("<Enter>", copy_on_enter)
-        copy_btn.bind("<Leave>", copy_on_leave)
         
         # Эффект hover для кнопки удаления
         def delete_on_enter(e):
@@ -494,6 +495,8 @@ def main():
         # Создаем скрытое главное окно
         root = tk.Tk()
         root.withdraw()
+        
+        print("🦬 Buffalo загружается...")
         
         # Запускаем менеджер
         manager = ClipboardManager(root)

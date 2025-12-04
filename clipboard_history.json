@@ -1,89 +1,25 @@
 {
   "history": [
     {
-      "text": "git branch --show-current",
-      "timestamp": "2025-12-04T04:34:03.407913",
-      "preview": "git branch --show-current"
-    },
-    {
-      "text": "sudo su",
-      "timestamp": "2025-12-04T04:30:46.577362",
-      "preview": "sudo su"
-    },
-    {
-      "text": "http://supervisor.local/",
-      "timestamp": "2025-12-04T04:29:38.042131",
-      "preview": "http://supervisor.local/"
-    },
-    {
-      "text": "npm run build",
-      "timestamp": "2025-12-04T04:27:30.503872",
-      "preview": "npm run build"
-    },
-    {
-      "text": "./start.sh./start.sh./start.sh./start.sh",
-      "timestamp": "2025-12-04T04:27:11.768301",
-      "preview": "./start.sh./start.sh./start.sh./start.sh"
-    },
-    {
-      "text": "grep -r '\"ip\": \"10.0.1.6\"' .",
-      "timestamp": "2025-12-04T04:17:44.455778",
-      "preview": "grep -r '\"ip\": \"10.0.1.6\"' ."
-    },
-    {
-      "text": "\ngrep -l \"91 860 706 2952\" *",
-      "timestamp": "2025-12-04T04:17:37.404489",
-      "preview": "\ngrep -l \"91 860 706 2952\" *"
-    },
-    {
-      "text": "\ngrep -l \"918607062952\" *",
-      "timestamp": "2025-12-04T04:17:35.858170",
-      "preview": "\ngrep -l \"918607062952\" *"
-    },
-    {
-      "text": "rm -rf ./*/ ",
-      "timestamp": "2025-12-04T04:17:17.750610",
-      "preview": "rm -rf ./*/ "
-    },
-    {
-      "text": "ls -d */  ",
-      "timestamp": "2025-12-04T04:17:15.903827",
-      "preview": "ls -d */  "
-    },
-    {
-      "text": "python3 clipboard_manager.py\n",
-      "timestamp": "2025-12-04T04:16:39.994278",
-      "preview": "python3 clipboard_manager.py\n"
-    },
-    {
-      "text": "TkpRK5RTK6fjrHj6eZkPeb",
-      "timestamp": "2025-12-04T04:16:33.853786",
-      "preview": "TkpRK5RTK6fjrHj6eZkPeb"
-    },
-    {
-      "text": "ssh kmuldash@172.29.31.29",
-      "timestamp": "2025-12-04T04:15:59.198495",
-      "preview": "ssh kmuldash@172.29.31.29"
-    },
-    {
-      "text": "cd /var/www/web-rc.north-east.in",
-      "timestamp": "2025-12-04T04:15:31.878166",
-      "preview": "cd /var/www/web-rc.north-east.in"
+      "text": "git@github.com:zephyr-m/buffalo.git",
+      "timestamp": "2025-12-04T04:40:04.133222",
+      "preview": "git@github.com:zephyr-m/buffalo.git"
     },
     {
       "text": "cd /var/www/web-rc.cashtoyou.in",
-      "timestamp": "2025-12-04T04:14:10.936474",
+      "timestamp": "2025-12-04T04:38:16.579935",
       "preview": "cd /var/www/web-rc.cashtoyou.in"
     },
     {
-      "text": "cd /var/www/web-rc.kredito24.in",
-      "timestamp": "2025-12-04T04:13:44.519376",
-      "preview": "cd /var/www/web-rc.kredito24.in"
+      "text": "cd /var/www/web-rc.north-east.in",
+      "timestamp": "2025-12-04T04:38:13.811056",
+      "preview": "cd /var/www/web-rc.north-east.in"
     },
     {
-      "text": "/home/zephyr/aes/develop/clipboard-manager",
-      "timestamp": "2025-12-04T04:11:47.609838",
-      "preview": "/home/zephyr/aes/develop/clipboard-manager"
+      "text": "cd /var/www/web-rc.kredito24.in",
+      "timestamp": "2025-12-04T04:38:07.995947",
+      "preview": "cd /var/www/web-rc.kredito24.in"
     }
-  ]
+  ],
+  "window_width": 595
 }
